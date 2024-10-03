@@ -5,7 +5,7 @@ export default function RootLayout() {
   return (
     <PaperProvider theme={MD3DarkTheme}>
       <Stack>
-        <Stack.Screen name="index" />
+        <Stack.Screen name="index" options={{ headerShown: false }} />
       </Stack>
     </PaperProvider>
   );
