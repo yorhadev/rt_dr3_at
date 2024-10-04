@@ -1,11 +1,12 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ScrollView, Dimensions, StyleSheet, View } from "react-native";
+import { ScrollView, Dimensions, StyleSheet, View, Alert } from "react-native";
 import { Text, Surface, useTheme } from "react-native-paper";
 import { useState } from "react";
 import MyTextInput from "@/components/MyTextInput";
 import MyDivider from "@/components/MyDivider";
 import MyButton from "@/components/MyButton";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
+import firebaseService from "@/services/firebase";
 
 export default function SignUp() {
   const [name, setName] = useState("");
@@ -18,7 +19,16 @@ export default function SignUp() {
 
   const theme = useTheme();
 
-  function handleSubmit() {}
+  async function handleSubmit() {
+    setLoading(true);
+    const response = await firebaseService.createUser(name, email, password);
+    setLoading(false);
+    if (response.status !== 200) {
+      Alert.alert(response.message);
+    } else {
+      router.replace("/(tabs)/home");
+    }
+  }
 
   return (
     <SafeAreaView>
@@ -55,6 +65,7 @@ export default function SignUp() {
               mode="contained"
               style={styles.formButton}
               disabled={loading}
+              onPress={handleSubmit}
             >
               Sign Up
             </MyButton>

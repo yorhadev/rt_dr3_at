@@ -1,8 +1,9 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Dimensions, ScrollView, StyleSheet } from "react-native";
 import { Surface, useTheme, Text } from "react-native-paper";
-import { router } from "expo-router";
+import { Redirect, router } from "expo-router";
 import MyButton from "@/components/MyButton";
+import { useGlobalContext } from "@/contexts/GlobalProvider";
 
 export default function App() {
   const theme = useTheme();
@@ -28,12 +29,16 @@ export default function App() {
     },
   });
 
+  const { isLoggedIn } = useGlobalContext();
+
+  if (isLoggedIn) return <Redirect href="/(tabs)/home" />;
+
   return (
     <SafeAreaView>
       <ScrollView>
         <Surface style={styles.container}>
           <Text style={styles.title} variant="displayMedium">
-            Discover Endless Possibilities with{" "}
+            Discover Endless Possibilities with {isLoggedIn ? "s" : "n"}
             <Text style={styles.accent}>Moviefy</Text>
           </Text>
           <Text style={styles.subtitle}>
