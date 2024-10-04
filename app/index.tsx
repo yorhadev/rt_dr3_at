@@ -38,7 +38,7 @@ export default function App() {
       <ScrollView>
         <Surface style={styles.container}>
           <Text style={styles.title} variant="displayMedium">
-            Discover Endless Possibilities with {isLoggedIn ? "s" : "n"}
+            Discover Endless Possibilities with{" "}
             <Text style={styles.accent}>Moviefy</Text>
           </Text>
           <Text style={styles.subtitle}>

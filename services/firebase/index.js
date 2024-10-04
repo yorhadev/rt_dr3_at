@@ -7,6 +7,7 @@ import {
   getReactNativePersistence,
   initializeAuth,
 } from "firebase/auth";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 
 const firebaseConfig = {
@@ -21,9 +22,12 @@ const firebaseConfig = {
 class FirebaseService {
   constructor() {
     this.app = initializeApp(firebaseConfig);
-    this.auth = initializeAuth(this.app, {
-      persistence: getReactNativePersistence(ReactNativeAsyncStorage),
-    });
+    this.auth = !!getReactNativePersistence
+      ? initializeAuth(this.app, {
+          persistence: getReactNativePersistence(ReactNativeAsyncStorage),
+        })
+      : getAuth(this.app);
+    this.storage = getStorage();
   }
 
   async createUser(name, email, password) {
@@ -61,6 +65,26 @@ class FirebaseService {
         status: 200,
         message: "user signed in successfully!",
         data: user,
+      };
+    } catch (error) {
+      return {
+        status: 400,
+        message: error.message,
+        data: null,
+      };
+    }
+  }
+
+  async uploadFile(fileName, prefix, blob) {
+    try {
+      const name = fileName || new Date().getTime();
+      const storageRef = ref(this.storage, `${prefix}/${name}`);
+      const uploadResult = await uploadBytes(storageRef, blob);
+      const downloadURL = await getDownloadURL(uploadResult.ref);
+      return {
+        status: 200,
+        message: "file uploaded successfully!",
+        data: downloadURL,
       };
     } catch (error) {
       return {
