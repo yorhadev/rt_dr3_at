@@ -76,7 +76,7 @@ export default function Profile() {
       <Surface style={styles.container}>
         <View>
           <Text variant="headlineLarge" style={styles.textBold}>
-            Profile {appTheme}
+            Profile
           </Text>
           <MyDivider style={{ marginVertical: 16 }} />
           <View style={styles.avatarContainer}>

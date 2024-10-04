@@ -66,7 +66,6 @@ export default function Create() {
         createdAt: String(new Date().getTime()),
       };
       const response = await insertData("posts", data);
-      console.log(response);
       if (response.status !== 200) Alert.alert(response.message);
     }
     setTitle("");
