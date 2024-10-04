@@ -5,33 +5,61 @@ import {
   FlatList,
   RefreshControl,
 } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Surface, Text, useTheme } from "react-native-paper";
 import firebaseService from "@/services/firebase";
 import MyTextInput from "@/components/MyTextInput";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import MyButton from "@/components/MyButton";
+import { createTables, selectData } from "@/services/database";
+import MyVideoCard from "@/components/MyVideoCard";
+import MyLatestList from "@/components/MyLatestList";
+import { router } from "expo-router";
 
 export default function Home() {
   const [refreshing, setRefreshing] = useState(false);
+
+  const [data, setData] = useState<any>([]);
+
   const theme = useTheme();
+
   const currentUser = firebaseService.auth.currentUser;
 
   async function onRefresh() {
     setRefreshing(true);
-    //TODO: refresh
+    fetchData();
     setRefreshing(false);
   }
+
+  async function fetchData() {
+    const response = await selectData("posts");
+    if (response.status === 200) setData(response.data);
+  }
+
+  useEffect(() => {
+    const initDatabase = async () => {
+      await createTables();
+    };
+    initDatabase();
+    fetchData();
+  }, []);
 
   return (
     <SafeAreaView>
       <Surface style={styles.container}>
         <FlatList
-          data={[{ id: "1" }, { id: "2" }]}
-          // data={[]}
-          keyExtractor={(item) => item?.id}
-          renderItem={({ item }) => <Text>{item?.id}</Text>}
+          data={data}
+          keyExtractor={(item) => item?.uid}
+          renderItem={({ item }) => (
+            <MyVideoCard
+              title={item.title}
+              thumbnail={item.thumbnail}
+              video={item.video}
+              description={item.description}
+              author={item.author}
+            />
+          )}
           ListHeaderComponent={
             <View>
               <Text variant="bodyLarge">Welcome Back</Text>
@@ -45,13 +73,7 @@ export default function Home() {
                 placeholder="Search for a video topic"
               />
               <Text variant="bodyLarge">Latest Videos</Text>
-              <FlatList
-                style={styles.latestList}
-                data={[{ id: "1" }, { id: "2" }]}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => <Text>{item.id}</Text>}
-                horizontal
-              ></FlatList>
+              <MyLatestList posts={data} />
             </View>
           }
           ListEmptyComponent={
@@ -70,7 +92,11 @@ export default function Home() {
               <Text style={styles.textCenter} variant="bodyLarge">
                 Be the first one to upload a video
               </Text>
-              <MyButton style={styles.createButton} mode="contained">
+              <MyButton
+                style={styles.createButton}
+                mode="contained"
+                onPress={() => router.push("/(tabs)/create")}
+              >
                 Create video
               </MyButton>
             </View>
@@ -84,7 +110,7 @@ export default function Home() {
   );
 }
 
-const minHeight = Dimensions.get("window").height;
+const minHeight = Dimensions.get("window").height * 0.9;
 
 const styles = StyleSheet.create({
   container: {

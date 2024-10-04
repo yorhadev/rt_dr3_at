@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import { Surface, Text, useTheme } from "react-native-paper";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
