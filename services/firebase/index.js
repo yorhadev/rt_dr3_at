@@ -75,6 +75,23 @@ class FirebaseService {
     }
   }
 
+  async signOut() {
+    try {
+      await this.auth.signOut();
+      return {
+        code: 200,
+        message: "user signed out successfully!",
+        data: null,
+      };
+    } catch (error) {
+      return {
+        code: 400,
+        message: error.message,
+        data: null,
+      };
+    }
+  }
+
   async uploadFile(fileName, prefix, blob) {
     try {
       const name = fileName || new Date().getTime();
@@ -85,6 +102,23 @@ class FirebaseService {
         status: 200,
         message: "file uploaded successfully!",
         data: downloadURL,
+      };
+    } catch (error) {
+      return {
+        status: 400,
+        message: error.message,
+        data: null,
+      };
+    }
+  }
+
+  async updateUserProfile(currentUser, displayName, photoURL) {
+    try {
+      await updateProfile(currentUser, { displayName, photoURL });
+      return {
+        status: 200,
+        message: "profile updated successfully!",
+        data: null,
       };
     } catch (error) {
       return {

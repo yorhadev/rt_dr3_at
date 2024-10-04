@@ -13,6 +13,7 @@ export const useGlobalContext = () => useContext(GlobalContext);
 
 export const GlobalProvider = ({ children }: PropsWithChildren) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [appTheme, setAppTheme] = useState("dark");
 
   useEffect(() => {
     firebaseService.auth.onAuthStateChanged((user) => {
@@ -21,7 +22,9 @@ export const GlobalProvider = ({ children }: PropsWithChildren) => {
   }, [isLoggedIn]);
 
   return (
-    <GlobalContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
+    <GlobalContext.Provider
+      value={{ isLoggedIn, setIsLoggedIn, appTheme, setAppTheme }}
+    >
       {children}
     </GlobalContext.Provider>
   );

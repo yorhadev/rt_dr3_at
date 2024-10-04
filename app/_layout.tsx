@@ -1,11 +1,12 @@
 import { GlobalProvider } from "@/contexts/GlobalProvider";
+import ThemeProvider from "@/contexts/ThemeProvider";
 import { Stack } from "expo-router";
 import { MD3DarkTheme, PaperProvider } from "react-native-paper";
 
 export default function RootLayout() {
   return (
     <GlobalProvider>
-      <PaperProvider theme={MD3DarkTheme}>
+      <ThemeProvider>
         <Stack>
           <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
@@ -15,7 +16,7 @@ export default function RootLayout() {
             options={{ headerShown: false }}
           />
         </Stack>
-      </PaperProvider>
+      </ThemeProvider>
     </GlobalProvider>
   );
 }

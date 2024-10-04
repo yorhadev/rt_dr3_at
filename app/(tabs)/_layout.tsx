@@ -30,20 +30,6 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="bookmark"
-        options={{
-          title: "Bookmark",
-          headerShown: false,
-          tabBarIcon: ({ focused }) => (
-            <FontAwesome
-              name="bookmark"
-              size={24}
-              color={focused ? theme.colors.primary : theme.colors.onSurface}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="create"
         options={{
           title: "Create",
