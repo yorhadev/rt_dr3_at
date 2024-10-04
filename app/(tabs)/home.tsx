@@ -4,10 +4,11 @@ import {
   StyleSheet,
   FlatList,
   RefreshControl,
+  Alert,
 } from "react-native";
 import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Surface, Text, useTheme } from "react-native-paper";
+import { Surface, Text, TextInput, useTheme } from "react-native-paper";
 import firebaseService from "@/services/firebase";
 import MyTextInput from "@/components/MyTextInput";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -15,12 +16,16 @@ import MyButton from "@/components/MyButton";
 import { createTables, selectData } from "@/services/database";
 import MyVideoCard from "@/components/MyVideoCard";
 import MyLatestList from "@/components/MyLatestList";
-import { router } from "expo-router";
+import { router, usePathname } from "expo-router";
 
 export default function Home() {
   const [refreshing, setRefreshing] = useState(false);
 
   const [data, setData] = useState<any>([]);
+
+  const [query, setQuery] = useState("");
+
+  const pathname = usePathname();
 
   const theme = useTheme();
 
@@ -71,6 +76,26 @@ export default function Home() {
                 mode="outlined"
                 label="Search"
                 placeholder="Search for a video topic"
+                value={query}
+                onChangeText={(text) => setQuery(text)}
+                right={
+                  <TextInput.Icon
+                    icon="magnify"
+                    onPress={(e) => {
+                      if (!query) {
+                        return Alert.alert(
+                          "Missing query",
+                          "Please input something to search results across database"
+                        );
+                      }
+                      if (pathname.startsWith("/search")) {
+                        router.setParams({ query });
+                      } else {
+                        router.push(`/search/${query}`);
+                      }
+                    }}
+                  />
+                }
               />
               <Text variant="bodyLarge">Latest Videos</Text>
               <MyLatestList posts={data} />

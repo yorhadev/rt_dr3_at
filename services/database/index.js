@@ -86,6 +86,25 @@ export async function selectData(table) {
   }
 }
 
+export async function selectDataByTitle(table, title) {
+  try {
+    const db = await getDb();
+    const query = `SELECT * FROM ${table} WHERE title LIKE '${title}%'`;
+    const allRows = await db.getAllAsync(query);
+    return {
+      status: 200,
+      message: "data selected successfully!",
+      data: allRows,
+    };
+  } catch (error) {
+    return {
+      status: 400,
+      message: `cannot select table ${table}`,
+      data: null,
+    };
+  }
+}
+
 export async function dropTable(table) {
   try {
     const db = await getDb();
